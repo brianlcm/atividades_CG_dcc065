@@ -1,18 +1,20 @@
-function changeCamera(initialPosition) {
+function changeCamera(initialPosition, lookat_vector, up_vector) {
   var position = (initialPosition !== undefined) ? initialPosition : new THREE.Vector3(-30, 40, 30);
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.copy(position);
-  camera.lookAt(new THREE.Vector3(0, 0, 0)); // or camera.lookAt(0, 0, 0);
-  //camera.up.set(0, 1, 0); // That's the default value
+  camera.position.copy(initialPosition);
+  camera.lookAt(lookat_vector); // or camera.lookAt(0, 0, 0);
+  camera.up.set(up_vector); // That's the default value
   return camera;
 }
 
 function main()
 {
+  var positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=1, upZ=0;
+
   var stats = initStats();          // To show FPS information
   var scene = new THREE.Scene();    // Create main scene
   var renderer = initRenderer();    // View function in util/utils
-  var camera = changeCamera(new THREE.Vector3(0, -30, 15)); // Init camera in this position
+  var camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ)); // Init camera in this position
   var clock = new THREE.Clock();
 
   // Show text information onscreen
@@ -60,15 +62,18 @@ function main()
     var speed = 30;
   	var moveDistance = speed * clock.getDelta();
 
-  	if ( keyboard.down("left") )   cube.translateX( -1 );
-  	if ( keyboard.down("right") )  cube.translateX(  1 );
-    if ( keyboard.down("up") )     cube.translateY(  1 );
-  	if ( keyboard.down("down") )   cube.translateY( -1 );
+  	if ( keyboard.pressed("left") )   positionX=positionX-1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+  	if ( keyboard.pressed("right") )  positionX=positionX+1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+    if ( keyboard.pressed("up") )     positionZ=positionZ+1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+  	if ( keyboard.pressed("down") )   positionZ=positionZ-1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
 
-  	if ( keyboard.pressed("A") )  cube.translateX( -moveDistance );
-  	if ( keyboard.pressed("D") )  cube.translateX(  moveDistance );
-    if ( keyboard.pressed("W") )  cube.translateY(  moveDistance );
-  	if ( keyboard.pressed("S") )  cube.translateY( -moveDistance );
+  	if ( keyboard.pressed("A") )  lookatX = lookatX -1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+  	if ( keyboard.pressed("D") )  lookatX = lookatX +1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+    if ( keyboard.pressed("W") )  lookatZ = lookatZ +1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+  	if ( keyboard.pressed("S") )  lookatZ = lookatZ -1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+
+    if ( keyboard.pressed("Q") )  upX = upX +1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
+  	if ( keyboard.pressed("E") )  upZ = upZ -1; camera = changeCamera(new THREE.Vector3(positionX, positionY, positionZ), new THREE.Vector3(lookatX, lookatY, lookatZ), new THREE.Vector3(upX, upY, upZ));;
 
   	if ( keyboard.pressed("space") ) cube.position.set(0.0, 0.0, 2.0);
   }
