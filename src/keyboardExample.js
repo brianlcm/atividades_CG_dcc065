@@ -69,15 +69,15 @@ function main()
     if ( keyboard.pressed("up") )     positionZ=positionZ+1; camera = changeCamera();;
   	if ( keyboard.pressed("down") )   positionZ=positionZ-1; camera = changeCamera();;
 
-    if ( keyboard.pressed("Q") )  upX = upX -1; upZ = upZ -1;  camera = changeCamera();;
-  	if ( keyboard.pressed("E") )  upX = upX +1; upZ = upZ +1;  camera = changeCamera();;
+    if ( keyboard.down("Q") )  upX = upX -1; upZ = upZ -1;  camera = changeCamera();;
+  	if ( keyboard.down("E") )  upX = upX +1; upZ = upZ +1;  camera = changeCamera();;
 
   	if ( keyboard.pressed("A") )  lookatX = lookatX -1; camera = changeCamera();;
   	if ( keyboard.pressed("D") )  lookatX = lookatX +1; camera = changeCamera();;
     if ( keyboard.pressed("W") )  lookatZ = lookatZ +1; camera = changeCamera();;
   	if ( keyboard.pressed("S") )  lookatZ = lookatZ -1; camera = changeCamera();;
 
-  	//if ( keyboard.pressed("space") ) cube.position.set(0.0, 0.0, 2.0);
+  	if ( keyboard.pressed("space") ) positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=1, upZ=0, camera =changeCamera();;
   }
 
   function showInformation()
