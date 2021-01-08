@@ -3,9 +3,7 @@ var positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lo
 
 function changeCamera() {
   //var position = (initialPosition !== undefined) ? initialPosition : new THREE.Vector3(-30, 40, 30);
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(positionX,positionY,positionZ);
-  //camera.lookAt(lookatX,lookatY,lookatZ); // or camera.lookAt(0, 0, 0);
   camera.up.set(upX,upY,upZ); // That's the default value
   camera.lookAt(lookatX,lookatY,lookatZ);
   return camera;
@@ -13,6 +11,7 @@ function changeCamera() {
 
 function main()
 {
+  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   var stats = initStats();          // To show FPS information
   var scene = new THREE.Scene();    // Create main scene
   var renderer = initRenderer();    // View function in util/utils
@@ -65,14 +64,11 @@ function main()
     var moveDistance = speed * clock.getDelta();
     var up = upX;
 
-  	if ( keyboard.pressed("left") )   positionX=positionX-1; camera = changeCamera();;
-  	if ( keyboard.pressed("right") )  positionX=positionX+1; camera = changeCamera();;
-    if ( keyboard.pressed("up") )     positionZ=positionZ+1; camera = changeCamera();;
-  	if ( keyboard.pressed("down") )   positionZ=positionZ-1; camera = changeCamera();;
+  	if ( keyboard.pressed("left") )   positionX=positionX-1; 
+  	if ( keyboard.pressed("right") )  positionX=positionX+1; 
+    if ( keyboard.pressed("up") )     positionZ=positionZ+1;
+  	if ( keyboard.pressed("down") )   positionZ=positionZ-1;
 
-    //if ( keyboard.down("Q") )  upX = upX -0.1; upZ = upZ +0.1;  camera = changeCamera();;
-    //if ( keyboard.down("E") )  upX = upX +0.1; upZ = upZ -0.1;  camera = changeCamera();;
-    
     if ( keyboard.pressed("E") )
     {
        up+=0.01;
@@ -88,12 +84,14 @@ function main()
       upX = up;
     }
 
-  	if ( keyboard.pressed("A") )  lookatX = lookatX -1; camera = changeCamera();;
-  	if ( keyboard.pressed("D") )  lookatX = lookatX +1; camera = changeCamera();;
-    if ( keyboard.pressed("W") )  lookatZ = lookatZ +1; camera = changeCamera();;
-  	if ( keyboard.pressed("S") )  lookatZ = lookatZ -1; camera = changeCamera();;
+  	if ( keyboard.pressed("A") )  lookatX = lookatX -1;
+  	if ( keyboard.pressed("D") )  lookatX = lookatX +1;
+    if ( keyboard.pressed("W") )  lookatZ = lookatZ +1;
+  	if ( keyboard.pressed("S") )  lookatZ = lookatZ -1;
 
-  	if ( keyboard.pressed("space") ) positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=0, upZ=1, camera =changeCamera();
+    if ( keyboard.pressed("space") ) positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=0, upZ=1;
+    
+    camera = changeCamera()
   }
 
   function showInformation()
