@@ -1,4 +1,4 @@
-var positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=1, upZ=0;
+var positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=0, upZ=1;
 
 
 function changeCamera() {
@@ -62,22 +62,38 @@ function main()
     keyboard.update();
 
     var speed = 30;
-  	var moveDistance = speed * clock.getDelta();
+    var moveDistance = speed * clock.getDelta();
+    var up = upX;
 
   	if ( keyboard.pressed("left") )   positionX=positionX-1; camera = changeCamera();;
   	if ( keyboard.pressed("right") )  positionX=positionX+1; camera = changeCamera();;
     if ( keyboard.pressed("up") )     positionZ=positionZ+1; camera = changeCamera();;
   	if ( keyboard.pressed("down") )   positionZ=positionZ-1; camera = changeCamera();;
 
-    if ( keyboard.down("Q") )  upX = upX -1; upZ = upZ -1;  camera = changeCamera();;
-  	if ( keyboard.down("E") )  upX = upX +1; upZ = upZ +1;  camera = changeCamera();;
+    //if ( keyboard.down("Q") )  upX = upX -0.1; upZ = upZ +0.1;  camera = changeCamera();;
+    //if ( keyboard.down("E") )  upX = upX +0.1; upZ = upZ -0.1;  camera = changeCamera();;
+    
+    if ( keyboard.pressed("E") )
+    {
+       up+=0.01;
+       if(up>1.0) up = 1.0;
+       upZ = 1-Math.abs(up);
+       upX = up;
+    }
+  	if ( keyboard.pressed("Q") )
+    {
+      up-=0.01;
+      if(up<-1.0) up = -1.0;
+      upZ = 1-Math.abs(up);
+      upX = up;
+    }
 
   	if ( keyboard.pressed("A") )  lookatX = lookatX -1; camera = changeCamera();;
   	if ( keyboard.pressed("D") )  lookatX = lookatX +1; camera = changeCamera();;
     if ( keyboard.pressed("W") )  lookatZ = lookatZ +1; camera = changeCamera();;
   	if ( keyboard.pressed("S") )  lookatZ = lookatZ -1; camera = changeCamera();;
 
-  	if ( keyboard.pressed("space") ) positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=1, upZ=0, camera =changeCamera();;
+  	if ( keyboard.pressed("space") ) positionX = 0, positionY = -30, positionZ = 40, lookatX = 0, lookatY = 0, lookatZ = 0, upX=0, upY=0, upZ=1, camera =changeCamera();
   }
 
   function showInformation()
