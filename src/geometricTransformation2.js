@@ -26,6 +26,12 @@ function main()
   var c2 = createCylinder();
   s2.add(c2);
 
+  var s3 = createSphere();
+  c2.add(s3);
+
+  var c3 = createCylinder();
+  s3.add(c3);
+
   // Listen window size changes
   window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
 
@@ -55,6 +61,8 @@ function main()
     c1.matrixAutoUpdate = false;
     s2.matrixAutoUpdate = false;
     c2.matrixAutoUpdate = false;
+    s3.matrixAutoUpdate = false;
+    c3.matrixAutoUpdate = false;
 
     var mat4 = new THREE.Matrix4();
 
@@ -62,6 +70,8 @@ function main()
     c1.matrix.identity();
     s2.matrix.identity();
     c2.matrix.identity();
+    s3.matrix.identity();
+    c3.matrix.identity();
 
     // Will execute T1 and then R1
     c1.matrix.multiply(mat4.makeRotationZ(angle[0])); // R1
@@ -73,6 +83,13 @@ function main()
     // Will execute T2 and then R2
     c2.matrix.multiply(mat4.makeRotationZ(angle[1])); // R2
     c2.matrix.multiply(mat4.makeTranslation(0.0, 1.0, 0.0)); // T2
+
+    // Just need to translate the sphere to the right position
+    s3.matrix.multiply(mat4.makeTranslation(0.0, 1.0, 0.0));
+
+    // Will execute T3 and then R3
+    c3.matrix.multiply(mat4.makeRotationZ(angle[2])); // R3
+    c3.matrix.multiply(mat4.makeTranslation(0.0, 1.0, 0.0)); //T3
   }
 
   function buildInterface()
@@ -81,10 +98,12 @@ function main()
     {
       this.joint1 = 270;
       this.joint2 = 0;
+      this.joint3 = 0;
 
       this.rotate = function(){
         angle[0] = degreesToRadians(this.joint1);
         angle[1] = degreesToRadians(this.joint2);
+        angle[2] = degreesToRadians(this.joint3);
         rotateCylinder();
       };
     };
@@ -97,6 +116,7 @@ function main()
     gui.add(controls, 'joint2', 0, 360)
       .onChange(function(e) { controls.rotate() })
       .name("Second Joint");
+    gui.add(controls, 'joint3', 0, 360).onChange(function(e) { controls.rotate() }).name("Third Joint");
   }
 
   function render()
