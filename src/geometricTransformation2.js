@@ -8,7 +8,7 @@ function main()
   var trackballControls = new THREE.TrackballControls( camera, renderer.domElement );
 
   // Set angles of rotation
-  var angle = [-1.57, 0]; // In degreesToRadians
+  var angle = [-1.57, 0, 0]; // In degreesToRadians
 
   // Show world axes
   var axesHelper = new THREE.AxesHelper( 12 );
@@ -83,7 +83,7 @@ function main()
     // Will execute T2 and then R2
     c2.matrix.multiply(mat4.makeRotationZ(angle[1])); // R2
     c2.matrix.multiply(mat4.makeTranslation(0.0, 1.0, 0.0)); // T2
-
+    
     // Just need to translate the sphere to the right position
     s3.matrix.multiply(mat4.makeTranslation(0.0, 1.0, 0.0));
 
