@@ -14,9 +14,9 @@ function main() {
     // Enable mouse rotation, pan, zoom etc.
     var trackballControls = new THREE.TrackballControls(camera, renderer.domElement);
 
-    /*// Show axes (parameter is size of each axis)
+    // Show axes (parameter is size of each axis)
     var axesHelper = new THREE.AxesHelper( 12 );
-    scene.add( axesHelper );*/
+    scene.add( axesHelper );
 
     // create the ground plane
     var planeGeometry = new THREE.PlaneGeometry(200, 200);
@@ -30,9 +30,9 @@ function main() {
     scene.add(plane);
 
     var pneu1 = criarPneu();
-    pneu1.position.set(0, -95.00, 2.0);
+    pneu1.position.set(0, -80.00, 2.0);
     pneu1.translateX(-2);
-    //pneu1.rotateOnAxis(new THREE.Vector3( 0,0,1),degreesToRadians(90));
+    pneu1.rotateOnAxis(new THREE.Vector3( 0,0,1),degreesToRadians(-90));
     scene.add(pneu1);
 
     var pneu2 = criarPneu();
@@ -55,8 +55,8 @@ function main() {
     eixo2.position.set(15.0, 5.0, 0.0);
     pneu1.add(eixo2);
 
-    var GeometriaChassi = new THREE.BoxGeometry(25, 3, 2.5, 5, 5, 5);
-    var MaterialChassi = new THREE.MeshPhongMaterial({ color: 'rgb(255,160,122)' });  
+    var GeometriaChassi = new THREE.BoxGeometry(25, 2.5, 2.5, 5, 5, 5);
+    var MaterialChassi = new THREE.MeshPhongMaterial({ color: 'rgb(255,160,122)' });
     var chassi = new THREE.Mesh(GeometriaChassi, MaterialChassi);
     chassi.position.set(7.5, 0.0, 0.0);
     eixo1.add(chassi);
@@ -65,7 +65,7 @@ function main() {
     var Materialbase_aerofolio = new THREE.MeshPhongMaterial({ color: 'rgb(255,160,122)' });
     var base_aerofolio = new THREE.Mesh(Geometriabase_aerofolio, Materialbase_aerofolio);
     base_aerofolio.position.set(11.0, 0.0, 0.0);
-    base_aerofolio.rotateOnAxis(new THREE.Vector3(0, 0, 1),degreesToRadians(90));
+    base_aerofolio.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(90));
     chassi.add(base_aerofolio);
 
     var Geometria_aerofolio_lado = new THREE.BoxGeometry(0.2, 3, 2.5, 5, 5, 5);
@@ -79,11 +79,15 @@ function main() {
     var Geometria_aerofolio = new THREE.BoxGeometry(0.2, 3, 5.5, 5, 5, 5);
     var aerofolio_superior = new THREE.Mesh(Geometria_aerofolio, Material_aerofolio);
     aerofolio_superior.position.set(0.0, 0.0, 3.8);
-    aerofolio_superior.rotateOnAxis(new THREE.Vector3( 0,1,0),degreesToRadians(90));
+    aerofolio_superior.rotateOnAxis(new THREE.Vector3(0, 1, 0), degreesToRadians(90));
     base_aerofolio.add(aerofolio_superior);
 
     base_aerofolio.add(lado1_aerofolio);
     base_aerofolio.add(lado2_aerofolio);
+
+    var cabine = criarCabine();
+    cabine.position.set(0.0, 0.0, 0.0);
+    chassi.add(cabine);
 
     function criarPneu() {
         var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 0.8, 27, 7, false, 0);
@@ -99,6 +103,32 @@ function main() {
         return eixo;
     }
 
+    function criarCabine() {
+        var frame = new THREE.Shape();
+        frame.moveTo(-5, -4);
+        frame.lineTo(5, -4);
+        frame.lineTo(5, 4);
+        frame.lineTo(-5, 4);
+
+        //..with a hole:
+        var hole = new THREE.Path();
+        hole.moveTo(-4, -3);
+        hole.lineTo(4, -3);
+        hole.lineTo(4, 3);
+        hole.lineTo(-4, 3);
+        frame.holes.push(hole);
+
+        //Extrude the shape into a geometry, and create a mesh from it:
+        var extrudeSettings = {
+            steps: 1,
+            depth: 2,
+            bevelEnabled: false,
+        };
+        var geom = new THREE.ExtrudeGeometry(frame, extrudeSettings);
+        var mesh = new THREE.Mesh(geom, new THREE.MeshPhongMaterial({ color: 0xffaaaa }));
+        return mesh;
+    }
+
     // Listen window size changes
     window.addEventListener('resize', function () { onWindowResize(camera, renderer) }, false);
 
@@ -111,10 +141,10 @@ function main() {
         var angle = degreesToRadians(10);
         var rotAxis = new THREE.Vector3(0, 0, 1); // Set Z axis
 
-        if (keyboard.pressed("left")) pneu1.translateY(1);
-        if (keyboard.pressed("right")) pneu1.translateY(-1);
-        if (keyboard.pressed("up")) pneu1.translateX(1);
-        if (keyboard.pressed("down")) pneu1.translateX(-1);
+        if (keyboard.pressed("left")) pneu1.translateY(-1);
+        if (keyboard.pressed("right")) pneu1.translateY(1);
+        if (keyboard.pressed("up")) pneu1.translateX(-1);
+        if (keyboard.pressed("down")) pneu1.translateX(1);
 
         if (keyboard.pressed("A")) pneu1.rotateOnAxis(rotAxis, angle);
         if (keyboard.pressed("D")) pneu1.rotateOnAxis(rotAxis, -angle);
