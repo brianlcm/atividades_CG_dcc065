@@ -196,14 +196,14 @@ function main() {
 
         if (modoInspecao == false) {
             if (keyboard.pressed("left")) {
-                if(velocidade > 0){
-                    chassi.rotateZ(degreesToRadians(5));
+                if(velocidade > 0.8){
+                    chassi.rotateZ(degreesToRadians(2));
                 }
             }
 
             if (keyboard.pressed("right")) {
-                if(velocidade > 0){
-                    chassi.rotateZ(degreesToRadians(-5));
+                if(velocidade > 0.8){
+                    chassi.rotateZ(degreesToRadians(-2));
                 }
             }
 
