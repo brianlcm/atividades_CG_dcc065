@@ -179,8 +179,8 @@ function main() {
     var projectionMessage = new SecondaryBox("Modo Jogo");
 
     var velocidade = 0;
-    var aceleracao = 0.01;
-    var velocidade_maxima = 3;
+    var aceleracao = 0.02;
+    var velocidade_maxima = 4;
     var solta_setaparacima = false;
     var solta_setaparabaixo = false;
 
@@ -196,18 +196,19 @@ function main() {
 
         if (modoInspecao == false) {
             if (keyboard.pressed("left")) {
-                if(velocidade != 0){
+                if(velocidade > 0){
                     chassi.rotateZ(degreesToRadians(5));
                 }
             }
 
             if (keyboard.pressed("right")) {
-                if(velocidade != 0){
+                if(velocidade > 0){
                     chassi.rotateZ(degreesToRadians(-5));
                 }
             }
 
             if (keyboard.pressed("up")) {
+                // Configura a rotação dos pneus durante a movimentação
                 pneu1.rotateY(rotacao_pneus);
                 pneu2.rotateY(rotacao_pneus);
                 pneu3.rotateY(rotacao_pneus);
@@ -221,6 +222,7 @@ function main() {
             }
 
             if (keyboard.pressed("down")) {
+                // Configura a rotação dos pneus durante a movimentação
                 pneu1.rotateY(rotacao_pneus);
                 pneu2.rotateY(rotacao_pneus);
                 pneu3.rotateY(rotacao_pneus);
