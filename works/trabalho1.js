@@ -5,10 +5,10 @@ function main() {
     var camera = initCamera(new THREE.Vector3(0, -60, 30)); // Init camera in this position 
     var light = initDefaultLighting(scene, new THREE.Vector3(0, 0, 15));
 
-    // Show text information onscreen
+    // Mostra orientações na tela
     showInformation();
 
-    // To use the keyboard
+    // Para usar o teclado
     var keyboard = new KeyboardState();
 
     // Enable mouse rotation, pan, zoom etc.
@@ -18,7 +18,7 @@ function main() {
     var axesHelper = new THREE.AxesHelper(12);
     scene.add(axesHelper);
 
-    // create the ground plane
+    // Criação do plano
     var planeGeometry = new THREE.PlaneGeometry(700, 700, 40, 40);
     planeGeometry.translate(0.0, 0.0, -0.02); // To avoid conflict with the axeshelper
     var planeMaterial = new THREE.MeshBasicMaterial({
@@ -35,6 +35,8 @@ function main() {
     var line = new THREE.LineSegments(wireframe);
     line.material.color.setStyle("rgb(180, 180, 180)");
     scene.add(line);
+
+    // ** Início da criação do kart **
 
     // Chassi
     var GeometriaChassi = new THREE.BoxGeometry(24, 2.5, 2.5, 5, 5, 5);
@@ -112,6 +114,7 @@ function main() {
     bancoAssento.position.set(-1, 0, 0);
     bancoEncosto.add(bancoAssento);
 
+    // Funções necessárias para a criações de várias formas geométricas que integram o kart
     function criarBicoFrontal() {
         var GeometriaBico = new THREE.BoxGeometry(2, 10, 1, 5, 5, 5);
         var BicoMaterial = new THREE.MeshPhongMaterial({ color: 'rgb(0,0,100)' });
@@ -147,6 +150,7 @@ function main() {
         return Assento;
     }
 
+    // Essa função cria um furo na cabine. Isso é necessário para que o kart tenha uma aparência semelhante ao que foi indicado nas orientações do trabalho
     function criarCabine() {
         var frame = new THREE.Shape();
         frame.moveTo(-1.5, -4);
@@ -154,7 +158,6 @@ function main() {
         frame.lineTo(7.5, 4);
         frame.lineTo(-1.5, 4);
 
-        //..with a hole:
         var hole = new THREE.Path();
         hole.moveTo(-0.5, -3);
         hole.lineTo(6.5, -3);
@@ -162,7 +165,6 @@ function main() {
         hole.lineTo(-0.5, 3);
         frame.holes.push(hole);
 
-        //Extrude the shape into a geometry, and create a mesh from it:
         var extrudeSettings = {
             steps: 1,
             depth: 2,
@@ -173,11 +175,13 @@ function main() {
         return mesh;
     }
 
+    // ** Fim da criação do kart **
 
     // Listen window size changes
     window.addEventListener('resize', function () { onWindowResize(camera, renderer) }, false);
     var projectionMessage = new SecondaryBox("Modo Jogo");
 
+    // Declaração das variáveis necessárias para o controle da velocidade do kart
     var velocidade = 0;
     var aceleracao = 0.02;
     var velocidade_maxima = 4;
@@ -192,17 +196,20 @@ function main() {
         keyboard.update();
 
         var rotacao_pneus = degreesToRadians(20);
-        //var rotAxis = new THREE.Vector3(0, 0, 1); // Set Z axis
 
         if (modoInspecao == false) {
             if (keyboard.pressed("left")) {
-                if(velocidade > 0.8){
+                /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
+                a 0.7 para fazer uma curva */
+                if(velocidade > 0.7 ){
                     chassi.rotateZ(degreesToRadians(2));
                 }
             }
 
             if (keyboard.pressed("right")) {
-                if(velocidade > 0.8){
+                /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
+                a 0.7 para fazer uma curva */
+                if(velocidade > 0.7){
                     chassi.rotateZ(degreesToRadians(-2));
                 }
             }
@@ -222,11 +229,6 @@ function main() {
             }
 
             if (keyboard.pressed("down")) {
-                // Configura a rotação dos pneus durante a movimentação
-                pneu1.rotateY(rotacao_pneus);
-                pneu2.rotateY(rotacao_pneus);
-                pneu3.rotateY(rotacao_pneus);
-                pneu4.rotateY(rotacao_pneus);
                 solta_setaparabaixo = false;
                 if (velocidade > 0) {
                     solta_setaparacima = false;
@@ -239,29 +241,32 @@ function main() {
 
             if (keyboard.down("space")) changeProjection();
 
+            // Configura câmera para seguir o kart
             camera.up.set(0, 0, 1);
 
             var camera_posicao = new THREE.Vector3(80, 0, 40);
 
-            var camera_segue_carrinho = camera_posicao.applyMatrix4(chassi.matrixWorld);
+            var camera_segue_kart = camera_posicao.applyMatrix4(chassi.matrixWorld);
         
-            camera.position.x = camera_segue_carrinho.x;
-            camera.position.y = camera_segue_carrinho.y;
-            camera.position.z = camera_segue_carrinho.z;
-
+            camera.position.x = camera_segue_kart.x;
+            camera.position.y = camera_segue_kart.y;
+            camera.position.z = camera_segue_kart.z;
             
             camera.lookAt(chassi.position);
         }
     }
 
+    // Variável necessária para verificar qual modo de câmera está ativo
     var modoInspecao = false;
 
+    // Função para alternar entre os modos de câmera
     function changeProjection() {
-        // Store the previous position of the camera
-        var pos = new THREE.Vector3().copy(camera.position);
 
+        var pos = new THREE.Vector3().copy(new THREE.Vector3(0, -60, 30));
+
+        /* Se o modo de inspeção estiver ativo, então o usuário deseja voltar para o modo de jogo. Nesse caso, é preciso adicionar o plano e as linhas, além das
+        configurações da câmera*/
         if (modoInspecao == true) {
-            
             scene.add(plane);
             scene.add(line);
             chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(-90));
@@ -274,6 +279,7 @@ function main() {
             camera.up.x = 0;
             camera.up.y = 0;
             camera.up.z = 1;
+            velocidade = 0;
             chassi.position.set(0, 0.0, 2.0);
             chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(90));
             scene.remove(plane);
@@ -288,6 +294,7 @@ function main() {
         lightFollowingCamera(light, camera) // Makes light follow the camera
     }
 
+    // Função para a configuração do botão de alteração de modo de câmera
     function buildInterface() {
         var controls = new function () {
             this.onChangeProjection = function () {
@@ -300,8 +307,8 @@ function main() {
         gui.add(controls, 'onChangeProjection').name("Alterar Câmera");
     }
 
+    //Funções com a definição das orientações da tela
     function showInformation() {
-        // Use this to show information onscreen
         controls = new InfoBox();
         controls.add("T1 - Kart Game");
         controls.addParagraph();
@@ -311,7 +318,6 @@ function main() {
         controls.add("- Tecle espaço ou use o botão do canto superior direito para alterar o modo");
         controls.show();
     }
-
 
     function render() {
         stats.update(); // Update FPS
