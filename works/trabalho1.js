@@ -79,6 +79,7 @@ function main() {
 
     var GeometriaCalota= new THREE.CylinderGeometry(0.5, 0.5, 1.5, 10, 12, false, 0);
     var MaterialCalota = new THREE.MeshPhongMaterial({ color: 'rgb(100,100,100)' });
+
     var calota1 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
     calota1.position.set(0,-0.3,0);
     pneu1.add(calota1);
@@ -264,7 +265,7 @@ function main() {
 
         if (keyboard.pressed("left")) {
             /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
-            a 0.7 para fazer uma curva */
+            a 0.3 para fazer uma curva */
             if (modoInspecao == false && velocidade > 0.3) {
                 chassi.rotateZ(degreesToRadians(2));
             }
@@ -285,7 +286,7 @@ function main() {
 
         if (keyboard.pressed("right")) {
             /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
-            a 0.7 para fazer uma curva */
+            a 0.3 para fazer uma curva */
             if (modoInspecao == false && velocidade > 0.3) {
                 chassi.rotateZ(degreesToRadians(-2));
             }
@@ -327,6 +328,7 @@ function main() {
         /* Se o modo de inspeção estiver ativo, então o usuário deseja voltar para o modo de jogo. Nesse caso, é preciso adicionar o plano e as linhas, além das
         configurações da câmera*/
         if (modoInspecao == true) {
+
             scene.add(plane);
             scene.add(line);
             chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(-90));
