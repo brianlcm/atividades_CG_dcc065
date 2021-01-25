@@ -38,7 +38,7 @@ function main() {
 
     // ** Início da criação do kart **
 
-    // Chassi
+    // Criação do chassi
     var GeometriaChassi = new THREE.BoxGeometry(24, 2.5, 2.5, 5, 5, 5);
     var MaterialChassi = new THREE.MeshPhongMaterial({ color: 'rgb(255,100,0)' });
     var GeometriaChassiInterno = new THREE.BoxGeometry(10, 7, 2.5, 5, 5, 5);
@@ -124,7 +124,7 @@ function main() {
 
     function criarPneu() {
         var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 10, 7, false, 0);
-        var MaterialPneu = new THREE.MeshNormalMaterial();
+        var MaterialPneu = new THREE.MeshPhongMaterial({ color: 'rgb(0,0,0)' });
         var pneu = new THREE.Mesh(GeometriaPneu, MaterialPneu);
         return pneu;
     }
@@ -273,6 +273,7 @@ function main() {
             projectionMessage.changeMessage("Modo Jogo");
             modoInspecao = false;
         } else {
+            // Configura a câmera e o kart para que a inspeção possa ser feita adequadamente
             camera.position.x = 0;
             camera.position.y = -60;
             camera.position.z = 30;
