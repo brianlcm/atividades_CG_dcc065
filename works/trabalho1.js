@@ -38,7 +38,7 @@ function main() {
 
     // ** Início da criação do kart **
 
-    // Criação do chassi
+    // Chassi
     var GeometriaChassi = new THREE.BoxGeometry(24, 2.5, 2.5, 5, 5, 5);
     var MaterialChassi = new THREE.MeshPhongMaterial({ color: 'rgb(255,100,0)' });
     var GeometriaChassiInterno = new THREE.BoxGeometry(10, 7, 2.5, 5, 5, 5);
@@ -76,6 +76,24 @@ function main() {
     var pneu4 = criarPneu();
     pneu4.position.set(0.0, -5.0, 0.0);
     eixo2.add(pneu4);
+
+    var GeometriaCalota= new THREE.CylinderGeometry(0.5, 0.5, 1.5, 10, 12, false, 0);
+    var MaterialCalota = new THREE.MeshPhongMaterial({ color: 'rgb(100,100,100)' });
+    var calota1 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
+    calota1.position.set(0,-0.3,0);
+    pneu1.add(calota1);
+
+    var calota2 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
+    calota2.position.set(0,0.3,0);
+    pneu2.add(calota2);
+
+    var calota3 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
+    calota3.position.set(0,0.3,0);
+    pneu3.add(calota3);
+
+    var calota4 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
+    calota4.position.set(0,-0.3,0);
+    pneu4.add(calota4);
 
     var Geometria_aerofolio_lado = new THREE.BoxGeometry(0.2, 2, 2.5, 5, 5, 5);
     var Material_aerofolio = new THREE.MeshPhongMaterial({ color: 'rgb(0,0,100)' });
@@ -124,13 +142,19 @@ function main() {
 
     function criarPneu() {
         var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 10, 7, false, 0);
-        var MaterialPneu = new THREE.MeshPhongMaterial({ color: 'rgb(0,0,0)' });
+        var MaterialPneu = new THREE.MeshNormalMaterial();
+        var pneu = new THREE.Mesh(GeometriaPneu, MaterialPneu);
+        return pneu;
+    }
+    function criarPneu() {
+        var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 35, 7, false, 0);
+        var MaterialPneu = new THREE.MeshPhongMaterial({ color: 'rgb(20,20,20)' });
         var pneu = new THREE.Mesh(GeometriaPneu, MaterialPneu);
         return pneu;
     }
 
     function criarEixo() {
-        var GeometriaEixo = new THREE.CylinderGeometry(0.5, 0.5, 12.1, 10, 12, false, 0);
+        var GeometriaEixo = new THREE.CylinderGeometry(0.5, 0.5, 11.5, 10, 12, false, 0);
         var MaterialEixo = new THREE.MeshPhongMaterial({ color: 'rgb(100,100,100)' });
         var eixo = new THREE.Mesh(GeometriaEixo, MaterialEixo);
         return eixo;
@@ -187,8 +211,8 @@ function main() {
     var velocidade_maxima = 4;
     var solta_setaparacima = false;
     var solta_setaparabaixo = false;
+    var angulo_pneu = 0;
 
-    buildInterface();
     render();
 
     function keyboardUpdate() {
@@ -196,28 +220,12 @@ function main() {
         keyboard.update();
 
         var rotacao_pneus = degreesToRadians(20);
+        var angulo_pneu_aux = degreesToRadians(3);
 
         if (modoInspecao == false) {
-            if (keyboard.pressed("left")) {
-                /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
-                a 0.7 para fazer uma curva */
-                if(velocidade > 0.7 ){
-                    chassi.rotateZ(degreesToRadians(2));
-                }
-            }
-
-            if (keyboard.pressed("right")) {
-                /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
-                a 0.7 para fazer uma curva */
-                if(velocidade > 0.7){
-                    chassi.rotateZ(degreesToRadians(-2));
-                }
-            }
 
             if (keyboard.pressed("up")) {
                 // Configura a rotação dos pneus durante a movimentação
-                pneu1.rotateY(rotacao_pneus);
-                pneu2.rotateY(rotacao_pneus);
                 pneu3.rotateY(rotacao_pneus);
                 pneu4.rotateY(rotacao_pneus);
                 solta_setaparacima = false;
@@ -226,6 +234,7 @@ function main() {
                     velocidade = velocidade + aceleracao;
                 }
                 chassi.translateX(-velocidade);
+                voltaPneus();
             }
 
             if (keyboard.pressed("down")) {
@@ -239,20 +248,71 @@ function main() {
             if (keyboard.up("down")) solta_setaparabaixo = true;
             if (keyboard.up("up")) solta_setaparacima = true;
 
-            if (keyboard.down("space")) changeProjection();
-
             // Configura câmera para seguir o kart
             camera.up.set(0, 0, 1);
 
             var camera_posicao = new THREE.Vector3(80, 0, 40);
 
             var camera_segue_kart = camera_posicao.applyMatrix4(chassi.matrixWorld);
-        
+
             camera.position.x = camera_segue_kart.x;
             camera.position.y = camera_segue_kart.y;
             camera.position.z = camera_segue_kart.z;
-            
+
             camera.lookAt(chassi.position);
+        }
+
+        if (keyboard.pressed("left")) {
+            /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
+            a 0.7 para fazer uma curva */
+            if (modoInspecao == false && velocidade > 0.3) {
+                chassi.rotateZ(degreesToRadians(2));
+            }
+
+            // Rotação das rodas para o lado esquerdo
+            angulo_pneu += angulo_pneu_aux;
+            if (angulo_pneu > degreesToRadians(30)) {
+                resto = angulo_pneu - degreesToRadians(30);
+                pneu1.rotateZ(angulo_pneu_aux - resto);
+                pneu2.rotateZ(angulo_pneu_aux - resto);
+                angulo_pneu = degreesToRadians(30);
+            }
+            else {
+                pneu1.rotateZ(angulo_pneu_aux);
+                pneu2.rotateZ(angulo_pneu_aux);
+            }
+        }
+
+        if (keyboard.pressed("right")) {
+            /* Condição para verificar se o kart está em uma velocidade muito baixa para fazer uma curva para a esquerda. Dessa forma, o kart precisa ter uma velocidade superior
+            a 0.7 para fazer uma curva */
+            if (modoInspecao == false && velocidade > 0.3) {
+                chassi.rotateZ(degreesToRadians(-2));
+            }
+
+            // Rotação das rodas para o lado direito
+            angulo_pneu -= angulo_pneu_aux;
+            if (angulo_pneu < degreesToRadians(-30)) {
+                resto = angulo_pneu - degreesToRadians(-30);
+                pneu1.rotateZ(-angulo_pneu_aux - resto);
+                pneu2.rotateZ(-angulo_pneu_aux - resto);
+                angulo_pneu = degreesToRadians(-30);
+            }
+            else {
+                pneu1.rotateZ(-angulo_pneu_aux);
+                pneu2.rotateZ(-angulo_pneu_aux);
+            }
+        }
+        if (keyboard.down("space")) changeProjection();
+    }
+
+    // Função para voltar os pneus para o angulo inicial
+    function voltaPneus() {
+        if (angulo_pneu != 0) {
+            parte_angulo = angulo_pneu / 10;
+            pneu1.rotateZ(-parte_angulo);
+            pneu2.rotateZ(-parte_angulo);
+            angulo_pneu -= parte_angulo;
         }
     }
 
@@ -273,7 +333,6 @@ function main() {
             projectionMessage.changeMessage("Modo Jogo");
             modoInspecao = false;
         } else {
-            // Configura a câmera e o kart para que a inspeção possa ser feita adequadamente
             camera.position.x = 0;
             camera.position.y = -60;
             camera.position.z = 30;
@@ -295,19 +354,6 @@ function main() {
         lightFollowingCamera(light, camera) // Makes light follow the camera
     }
 
-    // Função para a configuração do botão de alteração de modo de câmera
-    function buildInterface() {
-        var controls = new function () {
-            this.onChangeProjection = function () {
-                changeProjection();
-            };
-        };
-
-        // GUI interface
-        var gui = new dat.GUI();
-        gui.add(controls, 'onChangeProjection').name("Alterar Câmera");
-    }
-
     //Funções com a definição das orientações da tela
     function showInformation() {
         controls = new InfoBox();
@@ -316,7 +362,7 @@ function main() {
         controls.add("- Use as setas do teclado para mover o kart.");
         controls.add("- Pressione a seta para cima para acelerar ou a seta para baixo para frear");
         controls.add("- Pressione as setas para esquerda ou para movimentar nas respectivas direções");
-        controls.add("- Tecle espaço ou use o botão do canto superior direito para alterar o modo");
+        controls.add("- Tecle espaço para alterar o modo");
         controls.show();
     }
 
@@ -326,9 +372,10 @@ function main() {
         keyboardUpdate();
         lightFollowingCamera(light, camera);
         requestAnimationFrame(render);
-        if (velocidade > 0 && (solta_setaparacima || solta_setaparabaixo)) {
+        if (velocidade > 0 && (solta_setaparacima == true || solta_setaparabaixo == true)) {
             velocidade = velocidade - aceleracao;
             chassi.translateX(-velocidade);
+            voltaPneus();
         } else {
             solta_setaparacima = false;
             solta_setaparabaixo = false;
