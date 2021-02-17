@@ -19,7 +19,7 @@ function main() {
     scene.add(axesHelper);
 
     // Criação do plano
-    var planeGeometry = new THREE.PlaneGeometry(1400, 1100, 40, 40);
+    var planeGeometry = new THREE.PlaneGeometry(1600, 1100, 40, 40);
     planeGeometry.translate(0.0, 0.0, -0.02); // To avoid conflict with the axeshelper
     var planeMaterial = new THREE.MeshBasicMaterial({
         color: "rgba(20, 30, 110)",
@@ -209,8 +209,6 @@ function main() {
 
     // ** Fim da criação do kart **
 
-    var obj = null;
-
     // Importação Estatua
     criaEstatua();
     function criaEstatua() {
@@ -395,7 +393,7 @@ function main() {
         // Poste 8
         poste8 = criaPoste();
         poste8.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
-        poste8.position.set(450, 550, 15);
+        poste8.position.set(450, 530, 15);
         scene.add(poste8);
 
         lampada8 = criaLampada();
@@ -469,11 +467,13 @@ function main() {
 
     // Chama a função para criar as montanhas
 
+    // Declaração das varíaveis que serão usadas para a criação das montanhas
     var Montanha1_parte1 = null;
     var Montanha1_parte2 = null;
     var Montanha1_parte3 = null;
     var Montanha2_parte1 = null;
     var Montanha2_parte2 = null;
+    // Chamada da função responsável pela criação das montanhas
     criaMontanhas();
 
     // Listen window size changes
@@ -614,6 +614,7 @@ function main() {
             projectionMessage.changeMessage("Modo Jogo");
             modoInspecao = false;
 
+            // Deixando alguns objetos visíveis no modo de jogo, pois no modo de inspeção eles foram deixados como invisíveis
             poste1.visible = true;
             poste2.visible = true;
             poste3.visible = true;
@@ -653,6 +654,7 @@ function main() {
             projectionMessage.changeMessage("Modo Inspeção");
             modoInspecao = true;
 
+            // Deixando alguns objetos invisíveis durante o modo de inspeção
             poste1.visible = false;
             poste2.visible = false;
             poste3.visible = false;
@@ -673,12 +675,12 @@ function main() {
         lightFollowingCamera(spotLight, camera); // Makes light follow the camera
     }
 
-
+    // Desenvolvimento das caixas de seleção na interface para ajustar as luzes
     function buildInterface() {
         //------------------------------------------------------------
         // Interface
         var controls = new function () {
-            this.viewAxes = false;
+            this.viewAxes = true;
             this.viewPointLight = true;
             this.viewDirectionalLight = true;
             this.viewSpotLight = true;
@@ -705,7 +707,7 @@ function main() {
         };
 
         var gui = new dat.GUI();
-        gui.add(controls, 'viewAxes', false)
+        gui.add(controls, 'viewAxes', true)
             .name("View Axes")
             .onChange(function (e) { controls.onViewAxes() });
 
@@ -731,6 +733,7 @@ function main() {
         controls.add("- Pressione a seta para cima para acelerar ou a seta para baixo para frear");
         controls.add("- Pressione as setas para esquerda ou para movimentar nas respectivas direções");
         controls.add("- Tecle espaço para alterar o modo");
+        controls.add("- Utilize as caixas de seleção no menu do canto direito superior para alterar a iluminação");
         controls.show();
     }
 
@@ -751,28 +754,42 @@ function main() {
         renderer.render(scene, camera) // Render scene
     }
 
+    // Função responsável pela criação das montanhas
     function criaMontanhas() {
+        // Visibilidade da montanha como true
         var objectVisibility = true;
+        // Sombras como true
         var castShadow = true;
+        // Definindo as cores da montanha de acordo com as orientações do trabalho
         var montanhas_cor = "rgb(100, 70, 20)";
+        // Criação do material que será usado nas montanhas
         var montanhasMaterial = new THREE.MeshLambertMaterial({
             color: montanhas_cor,
             transparent: false
         });
+        // ** Montanha 1 - Parte 1**
+        // Criação do array de pontos para a primeira parte da primeira montanha
         var pontos_montanha1_parte1 = [];
+        // Criação da varíavel que define as dimensões da primeira parte da primeira montanha
         var montanha1_parte1_dimensoes = new THREE.Vector3(60, 120, 60);
+        // Chamada da função de preenchimento dos pontos da montanha. Enviamos como parâmetros o array de pontos e as dimensões da montanha
         montanha_tipo1(pontos_montanha1_parte1, montanha1_parte1_dimensoes);
 
-        // Criando Montanha 1
-
+        // Aqui criamos a geometria do tipo ConvexBufferGeometry e passamos os pontos preenchidos como parâmetro
         var convexGeometry_m1p1 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte1);
+        // Cria a montanha 1 (parte 1) enviando a geometria e o material
         Montanha1_parte1 = new THREE.Mesh(convexGeometry_m1p1, montanhasMaterial);
         Montanha1_parte1.castShadow = castShadow;
         Montanha1_parte1.visible = objectVisibility;
+        // Define a posição da montanha no plano
         Montanha1_parte1.position.set(0, 200, 0);
+        // Foi necessário fazer uma rotação na montanha para ajustar ao nosso plano
         Montanha1_parte1.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
         scene.add(Montanha1_parte1);
 
+        // ** Fim da criação da Montanha 1 - Parte 1**
+
+        // ** Montanha 1 - Parte 2**
         var pontos_montanha1_parte2 = [];
         var montanha1_parte2_dimensoes = new THREE.Vector3(60, 100, 60);
         montanha_tipo2(pontos_montanha1_parte2, montanha1_parte2_dimensoes);
@@ -783,7 +800,9 @@ function main() {
         Montanha1_parte2.visible = objectVisibility;
         Montanha1_parte2.position.set(130, 0, 0);
         Montanha1_parte1.add(Montanha1_parte2);
+        // ** Fim da criação da Montanha 1 - Parte 2**
 
+        // ** Montanha 1 - Parte 3**
         var pontos_montanha1_parte3 = [];
         var montanha1_parte3_dimensoes = new THREE.Vector3(40, 70, 40);
         montanha_tipo1(pontos_montanha1_parte3, montanha1_parte3_dimensoes);
@@ -792,11 +811,15 @@ function main() {
         Montanha1_parte3 = new THREE.Mesh(convexGeometry_m1_p3, montanhasMaterial);
         Montanha1_parte3.castShadow = castShadow;
         Montanha1_parte3.visible = objectVisibility;
-        Montanha1_parte3.position.set(250, 0, 0);
+        Montanha1_parte3.position.set(200, 0, 0);
+        // Apenas uma rotação para mostrar um lado diferente da montanha 1 parte 3
+        Montanha1_parte3.rotateOnAxis(new THREE.Vector3(0, 1, 0), degreesToRadians(180));
         Montanha1_parte1.add(Montanha1_parte3);
+        // ** Fim da criação da Montanha 1 - Parte 3**
 
         // Criando Montanha 2
 
+        // ** Montanha 2 - Parte 1**
         var pontos_montanha2_parte1 = [];
         var montanha2_parte1_dimensoes = new THREE.Vector3(40, 40, 40);
         montanha_tipo1(pontos_montanha2_parte1, montanha2_parte1_dimensoes);
@@ -808,8 +831,9 @@ function main() {
         Montanha2_parte1.position.set(700, 200, 0);
         Montanha2_parte1.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
         scene.add(Montanha2_parte1);
+        // ** Fim da criação da Montanha 2 - Parte 1**
 
-
+        // ** Montanha 2 - Parte 2**
         var pontos_montanha2_parte2 = [];
         var montanha2_parte2_dimensoes = new THREE.Vector3(40, 70, 40);
         montanha_tipo2(pontos_montanha2_parte2, montanha2_parte2_dimensoes);
@@ -821,9 +845,11 @@ function main() {
         Montanha2_parte2.position.set(700, 290, 0);
         Montanha2_parte2.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
         scene.add(Montanha2_parte2);
-
+        // ** Fim da criação da Montanha 2 - Parte 2**
     }
 
+    // Adicionando os pontos no primeiro estilo da montanha. Nesse caso, a função recebe o array de pontos que será preenchido
+    // e um parâmetro contendo as dimensões da montanha que está sendo criada
     function montanha_tipo1(pontos, dimensoes) {
         pontos.push(new THREE.Vector3(dimensoes.x, 0, dimensoes.z));
         pontos.push(new THREE.Vector3(- dimensoes.x, 0, dimensoes.z));
@@ -848,6 +874,8 @@ function main() {
         return pontos;
     }
 
+    // Adicionando os pontos no segundo estilo da montanha. Nesse caso, a função recebe o array de pontos que será preenchido
+    // e um parâmetro contendo as dimensões da montanha que está sendo criada
     function montanha_tipo2(pontos, dimensoes) {
         pontos.push(new THREE.Vector3(dimensoes.x, 0, dimensoes.z));
         pontos.push(new THREE.Vector3(- dimensoes.x, 0, dimensoes.z));
