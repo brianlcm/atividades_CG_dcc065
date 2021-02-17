@@ -45,7 +45,7 @@ function main() {
 
     var chassi = new THREE.Mesh(GeometriaChassi, MaterialChassi);
     var chassiInterno = new THREE.Mesh(GeometriaChassiInterno, MaterialChassi);
-    chassi.position.set(-100.0, -450.0, 2.0);
+    chassi.position.set(150.0, -450.0, 2.0);
     chassiInterno.castShadow = true;
     chassi.castShadow = true;
     scene.add(chassi);
@@ -209,6 +209,8 @@ function main() {
 
     // ** Fim da criação do kart **
 
+    var obj = null;
+
     // Importação Estatua
     criaEstatua();
     function criaEstatua() {
@@ -226,7 +228,9 @@ function main() {
                 objLoader.setPath(modelPath);
                 objLoader.load(modelName + ".obj", function (obj) {
                     obj.name = modelName;
+
                     obj.visible = visibility;
+
                     // Set 'castShadow' property for each children of the group
                     obj.traverse(function (child) {
                         child.castShadow = true;
@@ -273,7 +277,6 @@ function main() {
             return obj;
         }
     }
-
 
     // ** Fim Importação da Estatua  **
 
@@ -466,6 +469,11 @@ function main() {
 
     // Chama a função para criar as montanhas
 
+    var Montanha1_parte1 = null;
+    var Montanha1_parte2 = null;
+    var Montanha1_parte3 = null;
+    var Montanha2_parte1 = null;
+    var Montanha2_parte2 = null;
     criaMontanhas();
 
     // Listen window size changes
@@ -614,6 +622,11 @@ function main() {
             poste6.visible = true;
             poste7.visible = true;
             poste8.visible = true;
+            Montanha1_parte1.visible = true;
+            Montanha1_parte1.visible = true;
+            Montanha1_parte1.visible = true;
+            Montanha2_parte1.visible = true;
+            Montanha2_parte2.visible = true;
 
             // As variáveis que armazenam a posição do kart antes da mudança para o modo inspeção são usadas para atualizar 
             // a posição do kart ao ir para o modo jogo
@@ -648,6 +661,11 @@ function main() {
             poste6.visible = false;
             poste7.visible = false;
             poste8.visible = false;
+            Montanha1_parte1.visible = false;
+            Montanha1_parte1.visible = false;
+            Montanha1_parte1.visible = false;
+            Montanha2_parte1.visible = false;
+            Montanha2_parte2.visible = false;
         }
         camera.position.copy(pos);
         camera.lookAt(scene.position);
@@ -748,7 +766,7 @@ function main() {
         // Criando Montanha 1
 
         var convexGeometry_m1p1 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte1);
-        var Montanha1_parte1 = new THREE.Mesh(convexGeometry_m1p1, montanhasMaterial);
+        Montanha1_parte1 = new THREE.Mesh(convexGeometry_m1p1, montanhasMaterial);
         Montanha1_parte1.castShadow = castShadow;
         Montanha1_parte1.visible = objectVisibility;
         Montanha1_parte1.position.set(0, 200, 0);
@@ -760,7 +778,7 @@ function main() {
         montanha_tipo2(pontos_montanha1_parte2, montanha1_parte2_dimensoes);
 
         var convexGeometry_m1_p2 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte2);
-        var Montanha1_parte2 = new THREE.Mesh(convexGeometry_m1_p2, montanhasMaterial);
+        Montanha1_parte2 = new THREE.Mesh(convexGeometry_m1_p2, montanhasMaterial);
         Montanha1_parte2.castShadow = castShadow;
         Montanha1_parte2.visible = objectVisibility;
         Montanha1_parte2.position.set(130, 0, 0);
@@ -771,7 +789,7 @@ function main() {
         montanha_tipo1(pontos_montanha1_parte3, montanha1_parte3_dimensoes);
 
         var convexGeometry_m1_p3 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte3);
-        var Montanha1_parte3 = new THREE.Mesh(convexGeometry_m1_p3, montanhasMaterial);
+        Montanha1_parte3 = new THREE.Mesh(convexGeometry_m1_p3, montanhasMaterial);
         Montanha1_parte3.castShadow = castShadow;
         Montanha1_parte3.visible = objectVisibility;
         Montanha1_parte3.position.set(250, 0, 0);
@@ -784,7 +802,7 @@ function main() {
         montanha_tipo1(pontos_montanha2_parte1, montanha2_parte1_dimensoes);
 
         var convexGeometry_m2_p1 = new THREE.ConvexBufferGeometry(pontos_montanha2_parte1);
-        var Montanha2_parte1 = new THREE.Mesh(convexGeometry_m2_p1, montanhasMaterial);
+        Montanha2_parte1 = new THREE.Mesh(convexGeometry_m2_p1, montanhasMaterial);
         Montanha2_parte1.castShadow = castShadow;
         Montanha2_parte1.visible = objectVisibility;
         Montanha2_parte1.position.set(700, 200, 0);
@@ -797,7 +815,7 @@ function main() {
         montanha_tipo2(pontos_montanha2_parte2, montanha2_parte2_dimensoes);
 
         var convexGeometry_m2_p2 = new THREE.ConvexBufferGeometry(pontos_montanha2_parte2);
-        var Montanha2_parte2 = new THREE.Mesh(convexGeometry_m2_p2, montanhasMaterial);
+        Montanha2_parte2 = new THREE.Mesh(convexGeometry_m2_p2, montanhasMaterial);
         Montanha2_parte2.castShadow = castShadow;
         Montanha2_parte2.visible = objectVisibility;
         Montanha2_parte2.position.set(700, 290, 0);
