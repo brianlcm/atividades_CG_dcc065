@@ -9,7 +9,7 @@ function main()
     camera.lookAt(0, 0, 0);
     camera.position.set(2.18, 1.62, 3.31);
     camera.up.set( 0, 1, 0 );
-  var objColor = "rgb(255,20,20)";
+  var objColor = "rgb(255,225,20)";
   var objShininess = 200;
 
   // To use the keyboard

@@ -4,6 +4,7 @@ function main() {
     var renderer = initRenderer();    // View function in util/utils
     var camera = initCamera(new THREE.Vector3(0, -60, 30)); // Init camera in this position 
     var light = initDefaultLighting(scene, new THREE.Vector3(0, 0, 15));
+    scene.background = new THREE.Color('rgb(102, 153, 255)');
 
     // Mostra orientações na tela
     showInformation();
@@ -49,7 +50,7 @@ function main() {
     var chassiInterno = new THREE.Mesh(GeometriaChassiInterno, MaterialChassi);
     chassi.position.set(0.0, 0.0, 2.0);
     scene.add(chassi);
-    chassiInterno.position.set(3, 0, 0)
+    chassiInterno.position.set(3, 0, 0);
     chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(-90));
     chassi.add(chassiInterno);
 
@@ -77,23 +78,23 @@ function main() {
     pneu4.position.set(0.0, -5.0, 0.0);
     eixo2.add(pneu4);
 
-    var GeometriaCalota= new THREE.CylinderGeometry(0.5, 0.5, 1.5, 10, 12, false, 0);
+    var GeometriaCalota = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 10, 12, false, 0);
     var MaterialCalota = new THREE.MeshPhongMaterial({ color: 'rgb(100,100,100)' });
 
     var calota1 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
-    calota1.position.set(0,-0.3,0);
+    calota1.position.set(0, -0.3, 0);
     pneu1.add(calota1);
 
     var calota2 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
-    calota2.position.set(0,0.3,0);
+    calota2.position.set(0, 0.3, 0);
     pneu2.add(calota2);
 
     var calota3 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
-    calota3.position.set(0,0.3,0);
+    calota3.position.set(0, 0.3, 0);
     pneu3.add(calota3);
 
     var calota4 = new THREE.Mesh(GeometriaCalota, MaterialCalota);
-    calota4.position.set(0,-0.3,0);
+    calota4.position.set(0, -0.3, 0);
     pneu4.add(calota4);
 
     var Geometria_aerofolio_lado = new THREE.BoxGeometry(0.2, 2, 2.5, 5, 5, 5);
@@ -141,12 +142,6 @@ function main() {
         return bico;
     }
 
-    function criarPneu() {
-        var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 10, 7, false, 0);
-        var MaterialPneu = new THREE.MeshNormalMaterial();
-        var pneu = new THREE.Mesh(GeometriaPneu, MaterialPneu);
-        return pneu;
-    }
     function criarPneu() {
         var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 35, 7, false, 0);
         var MaterialPneu = new THREE.MeshPhongMaterial({ color: 'rgb(20,20,20)' });
@@ -201,6 +196,83 @@ function main() {
     }
 
     // ** Fim da criação do kart **
+
+    var objectVisibility = true;
+    var castShadow = true;
+    var montanhas_cor = "rgb(100, 70, 20)";
+    var montanhasMaterial = new THREE.MeshPhongMaterial({
+        color: montanhas_cor,
+        transparent: false
+    });
+    var pontos_montanha1_parte1 = [];
+    var montanha1_parte2_dimensoes = new THREE.Vector3(130, 200, 130);
+    pontos_montanha1_parte1.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte1.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte1.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte1.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte1.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x + 30, 0, montanha1_parte2_dimensoes.z + 30));
+    pontos_montanha1_parte1.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x + 20, 20, montanha1_parte2_dimensoes.z + 10));
+    for (var i = 0; i < 6; i++) {
+        pontos_montanha1_parte1.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x - i * 2, i, montanha1_parte2_dimensoes.z - 10 * 2));
+        pontos_montanha1_parte1.push(new THREE.Vector3(montanha1_parte2_dimensoes.x + i * 2, i, -montanha1_parte2_dimensoes.z + 20 * 2));
+    }
+    pontos_montanha1_parte1.push(new THREE.Vector3(0, montanha1_parte2_dimensoes.y, 0));
+    pontos_montanha1_parte1.push(new THREE.Vector3(20, montanha1_parte2_dimensoes.y-5, 0));
+
+    var convexGeometry_m1p1 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte1);
+    var Montanha1_parte1 = new THREE.Mesh(convexGeometry_m1p1, montanhasMaterial);
+    Montanha1_parte1.castShadow = castShadow;
+    Montanha1_parte1.visible = objectVisibility;
+    Montanha1_parte1.position.set(0, 300, 0);
+    Montanha1_parte1.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
+    scene.add(Montanha1_parte1);
+
+    var pontos_montanha1_parte2 = [];
+    var montanha1_parte2_dimensoes = new THREE.Vector3(100, 130, 130);
+    pontos_montanha1_parte2.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte2.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte2.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte2.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte2.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x + 30, 0, montanha1_parte2_dimensoes.z + 30));
+    pontos_montanha1_parte2.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x + 20, 20, montanha1_parte2_dimensoes.z + 10));
+    for (var i = 0; i < 6; i++) {
+        pontos_montanha1_parte2.push(new THREE.Vector3(montanha1_parte2_dimensoes.x - i * 10, 2 * i, -montanha1_parte2_dimensoes.z - 10 * 3));
+        pontos_montanha1_parte2.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x + i * 10, 2 * i, montanha1_parte2_dimensoes.z + 20 * 3));
+    }
+    pontos_montanha1_parte2.push(new THREE.Vector3(-10, montanha1_parte2_dimensoes.y, 20));
+
+    var convexGeometry_m1_p2 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte2);
+    var Montanha1_parte2 = new THREE.Mesh(convexGeometry_m1_p2, montanhasMaterial);
+    Montanha1_parte2.castShadow = castShadow;
+    Montanha1_parte2.visible = objectVisibility;
+    Montanha1_parte2.position.set(150, 300, 0);
+    Montanha1_parte2.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
+    scene.add(Montanha1_parte2);
+
+    var pontos_montanha1_parte3 = [];
+    var montanha1_parte2_dimensoes = new THREE.Vector3(90, 100, 80);
+    pontos_montanha1_parte3.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte3.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte3.push(new THREE.Vector3(montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte3.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x, 0, - montanha1_parte2_dimensoes.z));
+    pontos_montanha1_parte3.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x + 30, 0, montanha1_parte2_dimensoes.z + 30));
+    pontos_montanha1_parte3.push(new THREE.Vector3(- montanha1_parte2_dimensoes.x + 20, 20, montanha1_parte2_dimensoes.z + 10));
+    for (var i = 0; i < 6; i++) {
+        pontos_montanha1_parte3.push(new THREE.Vector3(montanha1_parte2_dimensoes.x - i * 10, 2 * i, -montanha1_parte2_dimensoes.z - 10 * 3));
+        pontos_montanha1_parte3.push(new THREE.Vector3(-montanha1_parte2_dimensoes.x + i * 10, 2 * i, montanha1_parte2_dimensoes.z + 20 * 3));
+    }
+    pontos_montanha1_parte3.push(new THREE.Vector3(-10, montanha1_parte2_dimensoes.y, 20));
+    
+
+    var convexGeometry_m1_p3 = new THREE.ConvexBufferGeometry(pontos_montanha1_parte3);
+    var Montanha1_parte3 = new THREE.Mesh(convexGeometry_m1_p3, montanhasMaterial);
+    Montanha1_parte3.castShadow = castShadow;
+    Montanha1_parte3.visible = objectVisibility;
+    Montanha1_parte3.position.set(100, 150, 0);
+    Montanha1_parte3.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
+    scene.add(Montanha1_parte3);
+
+
 
     // Listen window size changes
     window.addEventListener('resize', function () { onWindowResize(camera, renderer) }, false);

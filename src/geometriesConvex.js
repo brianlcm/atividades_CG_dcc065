@@ -60,7 +60,7 @@ function main()
   // Create convex object the first time
   updateConvexObject();
 
-  buildInterface();
+  //buildInterface();
   render();
 
   function generatePoints(numberOfPoints)
@@ -75,7 +75,7 @@ function main()
       points.push(new THREE.Vector3(randomX, randomY, randomZ));
     }
 
-    if(spGroup) spGroup.dispose();
+    /*if(spGroup) spGroup.dispose();
 
     spGroup = new THREE.Geometry();
     spMesh = new THREE.Mesh(sphereGeom);
@@ -88,7 +88,7 @@ function main()
     pointCloud = new THREE.Mesh(spGroup, sphereMaterial);
       pointCloud.castShadow = castShadow;
       pointCloud.visible = pointCloudVisibility;
-    scene.add(pointCloud);
+    scene.add(pointCloud);*/
 
     return points;
   }
@@ -97,9 +97,9 @@ function main()
   {
     // As the object is updated when changing number of Points
     // it's useful to remove the previous object from memory (if it exists)
-    if(object) scene.remove(object);
+    /*if(object) scene.remove(object);
     if(pointCloud) scene.remove(pointCloud);
-    if(convexGeometry) convexGeometry.dispose();
+    if(convexGeometry) convexGeometry.dispose();*/
 
     // First, create the point vector to be used by the convex hull algorithm
     var localPoints = generatePoints(numPoints);
@@ -116,7 +116,7 @@ function main()
     //console.log(renderer.info);
   }
 
-  function buildInterface()
+  /*function buildInterface()
   {
     var controls = new function ()
     {
@@ -190,7 +190,7 @@ function main()
     gui.add(controls, 'numPoints', 10, 50)
       .name("Number Of Points")
       .onChange(function(e) { controls.rebuildGeometry();});
-  }
+  }*/
 
   function render()
   {
