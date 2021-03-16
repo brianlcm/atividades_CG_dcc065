@@ -4,13 +4,14 @@ function main()
   var stats = initStats();          // To show FPS information
   var renderer = initRenderer();    // View function in util/utils
     renderer.setClearColor("rgb(30, 30, 42)");
-
+  // Camera
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.lookAt(0, 0, 0);
-    camera.position.set(0.0, 0.0, 5.0);
-    camera.up.set( 0, 1, 0 );
+    camera.position.set(2.18, 1.62, 3.31);
+    camera.up.set( 0, 0, 1 );
 
-  var lightPosition = new THREE.Vector3(0.0, 0.0, 5.0);
+  // Light
+  var lightPosition = new THREE.Vector3(1.7, 0.8, 1.1);
   var light = initDefaultLighting(scene, lightPosition); // Use default light
 
   // Enable mouse rotation, pan, zoom etc.
@@ -19,140 +20,91 @@ function main()
   // Listen window size changes
   window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
 
-  //----------------------------------------------------------------------------
-  //-- Scene Objects -----------------------------------------------------------
-  var planeGeometry = new THREE.PlaneGeometry(4.0, 4.0, 10, 10);
-  var planeMaterial = new THREE.MeshLambertMaterial({color:"rgb(255,255,255)",side:THREE.DoubleSide});
-  var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  scene.add(plane);
-
+  // Controls objects
+  var objectArray = new Array();
+  var activeObject = 0;
+  
   //----------------------------------------------------------------------------
   //-- Use TextureLoader to load texture files
   var textureLoader = new THREE.TextureLoader();
-  var floor  = textureLoader.load('../assets/textures/marble.png');
+  var cylinderCapTexture  = textureLoader.load('../assets/textures/woodtop.png');
+  var cylinderTexture = textureLoader.load('../assets/textures/wood.png');
+  var face = textureLoader.load('../assets/textures/marble.png');
 
-  // Apply texture to the 'map' property of the plane
-  plane.material.map = floor;
+  //-- Scene Objects -----------------------------------------------------------
+  // Cube object
+  let top = createFace(1.0, 1.0, face); // width, height and texture
+  objectArray.push(top);
+  scene.add(top);
 
-  // Set defaults
-  var repeatFactor = 2;
-  var wrapModeS  = THREE.RepeatWrapping;
-  var wrapModeT  = THREE.RepeatWrapping;
-  var minFilter = THREE.LinearFilter;
-  var magFilter = THREE.LinearFilter;
-  updateTexture();
+  let sides = [];
+  for( i = 0; i < 5; i++){
+    sides[i] = createFace(1.0, 1.0, face);
+    top.add(sides[i]);
+  }
+  sides[0].rotateX(degreesToRadians(90)).translateZ(0.5).translateY(-0.5);
+  sides[1].rotateX(degreesToRadians(90)).translateZ(-0.5).translateY(-0.5);
+  sides[2].rotateY(degreesToRadians(90)).translateZ(0.5).translateX(0.5);
+  sides[3].rotateY(degreesToRadians(90)).translateZ(-0.5).translateX(0.5);
+
+  function createFace(width, height, face){
+
+    let planeGeometry = new THREE.PlaneGeometry(width, height, 10, 10);
+    let planeMaterial = new THREE.MeshPhongMaterial({map: face, side:THREE.DoubleSide});
+    let plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    
+    return plane;
+    
+  }
+  
+  // Cylinder objects
+  // Cilindro
+  const cy_geometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 30, 0,true);
+  const cy_material = new THREE.MeshPhongMaterial({map: cylinderTexture, side:THREE.DoubleSide});
+  const cylinder_obj = new THREE.Mesh(cy_geometry, cy_material);
+  scene.add(cylinder_obj);
+  cylinder_obj.visible = false;
+  objectArray.push(cylinder_obj);
+
+  // Topo e base
+  const circle_geometry = new THREE.CircleGeometry(0.5,30);
+  const circle_material = new THREE.MeshBasicMaterial({map:cylinderCapTexture, side:THREE.DoubleSide});
+  const bottom_circle = new THREE.Mesh(circle_geometry, circle_material);
+  const top_circle = new THREE.Mesh(circle_geometry, circle_material);
+  cylinder_obj.add(bottom_circle);
+  bottom_circle.translateY(-1).rotateX(degreesToRadians(90));
+  cylinder_obj.add(top_circle);
+  top_circle.translateY(1).rotateX(degreesToRadians(90));
 
   buildInterface();
   render();
 
-  function updateTexture()
-  {
-    plane.material.map.repeat.set(repeatFactor,repeatFactor);
-    plane.material.map.wrapS = wrapModeS;
-    plane.material.map.wrapT = wrapModeT;
-    plane.material.map.minFilter = minFilter;
-    plane.material.map.magFilter = magFilter;
-  }
-
-  function buildInterface()
-  {
-    //------------------------------------------------------------
+  function buildInterface(){
     // Interface
-    var controls = new function ()
-    {
-      this.wrapS = 'Repeat';
-      this.wrapT = 'Repeat';
-      this.repeat = repeatFactor;
-      this.mag = 'Linear';
-      this.min = 'Linear';
+    var controls = new function (){
+      this.type = "Object0";
 
-      this.onChangeRepeatFactor = function(){
-        repeatFactor = this.repeat;
-        updateTexture();
+      this.onChooseObject = function(){
+        objectArray[activeObject].visible = false;
+        // Get number of the object by parsing the string (Object'number')
+        activeObject = this.type[6];
+        objectArray[activeObject].visible = true;
       };
-      this.onChangingWrappingMode_S = function()
-      {
-        switch (this.wrapS)
-        {
-          case 'Clamp':
-              wrapModeS = THREE.ClampToEdgeWrapping;
-              break;
-          case 'Repeat':
-              wrapModeS = THREE.RepeatWrapping;
-              break;
-        }
-        plane.material.map.needsUpdate = true;
-        updateTexture();
-      };
-      this.onChangingWrappingMode_T = function()
-      {
-        switch (this.wrapT)
-        {
-          case 'Clamp':
-              wrapModeT = THREE.ClampToEdgeWrapping;
-              break;
-          case 'Repeat':
-              wrapModeT = THREE.RepeatWrapping;
-              break;
-        }
-        plane.material.map.needsUpdate = true;
-        updateTexture();
-      };
-      // Best to see if the object is far
-      this.onChangingMinification = function()
-      {
-        switch (this.min)
-        {
-          case 'Linear':
-              minFilter = THREE.LinearFilter;
-              break;
-          case 'Nearest':
-              minFilter = THREE.NearestFilter;
-              break;
-        }
-        plane.material.map.needsUpdate = true;
-        updateTexture();
-      };
-      // Best to see if the object is near
-      this.onChangingMagnification = function()
-      {
-        switch (this.mag)
-        {
-          case 'Linear':
-              magFilter = THREE.LinearFilter;
-              break;
-          case 'Nearest':
-              magFilter = THREE.NearestFilter;
-              break;
-        }
-        plane.material.map.needsUpdate = true;
-        updateTexture();
-      };
+      
     };
 
+    // GUI interface
     var gui = new dat.GUI();
-
-    gui.add(controls, 'repeat', 1, 10)
-      .name("Repeat Factor")
-      .onChange(function(e) { controls.onChangeRepeatFactor()});
-    gui.add(controls, 'wrapS',['Clamp', 'Repeat'])
-      .name("Wrapping Mode S")
-      .onChange(function(e) { controls.onChangingWrappingMode_S(); });
-    gui.add(controls, 'wrapT',['Clamp', 'Repeat'])
-      .name("Wrapping Mode T")
-      .onChange(function(e) { controls.onChangingWrappingMode_T(); });
-    gui.add(controls, 'mag',['Linear', 'Nearest'])
-      .name("Magnification")
-      .onChange(function(e) { controls.onChangingMagnification(); });
-    gui.add(controls, 'min',['Linear', 'Nearest'])
-      .name("Minification")
-      .onChange(function(e) { controls.onChangingMinification(); });
+    gui.add(controls, 'type',
+      ['Object0', 'Object1'])
+      .name("Muda Objeto")
+      .onChange(function(e) { controls.onChooseObject(); });    
   }
 
-  function render()
-  {
+  function render(){
     stats.update();
     trackballControls.update();
+    lightFollowingCamera(light, camera);
     requestAnimationFrame(render);
     renderer.render(scene, camera)
   }
