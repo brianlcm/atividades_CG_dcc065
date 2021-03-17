@@ -4,12 +4,12 @@ function main() {
     var renderer = initRenderer();    // View function in util/utils
     var camera = customInitCamera(new THREE.Vector3(0, -60, 30)); // Init camera in this position 
     scene.background = new THREE.Color('rgb(102, 153, 255)');
-    camera.far=10000;
+    camera.far = 10000;
     var textureLoader = new THREE.TextureLoader();
     // Mostra orientações na tela
     showInformation();
     const skyboxloader = new THREE.CubeTextureLoader();
-    
+
     //scene.background = texture;
     // Para usar o teclado
     var keyboard = new KeyboardState();
@@ -35,11 +35,11 @@ function main() {
     var planePista = new THREE.Mesh(planeGeometry1, planeMaterial1);
     planePista.material.map = pista;
     scene.add(planePista);
-    planePista.castShadow=false;
-    planePista.receiveShadow= true;
+    planePista.castShadow = false;
+    planePista.receiveShadow = true;
     planePista.material.map.minFilter = THREE.LinearFilter;
     planePista.material.map.magFilter = THREE.LinearFilter;
-    
+
     // Criação do plano da areia
     var areia = textureLoader.load('./assets/sand.jpg');
     var planeGeometry2 = new THREE.PlaneGeometry(3200, 3200, 100, 100);
@@ -53,11 +53,11 @@ function main() {
     });
     var planeAreia = new THREE.Mesh(planeGeometry2, planeMaterial2);
     scene.add(planeAreia);
-    planeAreia.castShadow=false;
-    planeAreia.receiveShadow= true;
+    planeAreia.castShadow = false;
+    planeAreia.receiveShadow = true;
 
     planeAreia.material.map = areia;
-    planeAreia.material.map.repeat.set(1.8,1.8);
+    planeAreia.material.map.repeat.set(1.8, 1.8);
     planeAreia.material.map.wrapS = THREE.RepeatWrapping;
     planeAreia.material.map.wrapT = THREE.RepeatWrapping;
     planeAreia.material.map.minFilter = THREE.LinearFilter;
@@ -67,7 +67,7 @@ function main() {
 
     // Chassi
     var GeometriaChassi = new THREE.BoxGeometry(24, 2.5, 2.5, 5, 5, 5);
-    var MaterialChassi = new THREE.MeshLambertMaterial({color:"rgb(150,150,150)",side:THREE.DoubleSide});
+    var MaterialChassi = new THREE.MeshLambertMaterial({ color: "rgb(150,150,150)", side: THREE.DoubleSide });
     var GeometriaChassiInterno = new THREE.BoxGeometry(10, 7, 2.5, 5, 5, 5);
 
     var chassi = new THREE.Mesh(GeometriaChassi, MaterialChassi);
@@ -76,11 +76,11 @@ function main() {
     chassiInterno.castShadow = true;
     chassi.castShadow = true;
     var neon = textureLoader.load('./assets/txt3.jpg');
-    chassi.material.map=neon;
+    chassi.material.map = neon;
     scene.add(chassi);
     chassiInterno.position.set(3, 0, 0)
     chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(180));
-    
+
     chassi.add(chassiInterno);
 
     var eixo1 = criarEixo();
@@ -131,17 +131,17 @@ function main() {
     pneu4.add(calota4);
 
     var Geometria_aerofolio_lado = new THREE.BoxGeometry(0.2, 2, 2.5, 5, 5, 5);
-    var Material_aerofolio = new THREE.MeshLambertMaterial({color:"rgb(50,50,50)",side:THREE.DoubleSide});
+    var Material_aerofolio = new THREE.MeshLambertMaterial({ color: "rgb(50,50,50)", side: THREE.DoubleSide });
     var lado1_aerofolio = new THREE.Mesh(Geometria_aerofolio_lado, Material_aerofolio);
     lado1_aerofolio.position.set(10.0, 1.0, 2.5);
     lado1_aerofolio.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(90));
     var metal = textureLoader.load('./assets/textura-metal.jpg');
-    
+
 
     var lado2_aerofolio = new THREE.Mesh(Geometria_aerofolio_lado, Material_aerofolio);
     lado2_aerofolio.position.set(10.0, -1.0, 2.5);
     lado2_aerofolio.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(90));
-    
+
 
     var Geometria_aerofolio = new THREE.BoxGeometry(0.5, 3, 8, 5, 5, 5);
     var aerofolio_superior = new THREE.Mesh(Geometria_aerofolio, Material_aerofolio);
@@ -149,7 +149,7 @@ function main() {
     aerofolio_superior.rotateOnAxis(new THREE.Vector3(0, 1, 0), degreesToRadians(90));
     aerofolio_superior.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
 
-    aerofolio_superior.material.map=metal;
+    aerofolio_superior.material.map = metal;
     aerofolio_superior.castShadow = true;
     lado1_aerofolio.castShadow = true;
     lado2_aerofolio.castShadow = true;
@@ -161,30 +161,30 @@ function main() {
     var bicoFrontal = criarBicoFrontal();
     bicoFrontal.position.set(-10, 0, 0);
     var carbono = textureLoader.load('./assets/carbono.jpg');
-    bicoFrontal.material.map=carbono;
+    bicoFrontal.material.map = carbono;
     chassi.add(bicoFrontal);
 
     var cabine = criarCabine();
     cabine.position.set(0.0, 0.0, 0.0);
     cabine.castShadow = true;
-    
+
     chassi.add(cabine);
 
     var couro = textureLoader.load('./assets/couro.jpg');
     var bancoEncosto = criarBancoEncosto();
     bancoEncosto.position.set(4, 0, 1.5);
-    bancoEncosto.material.map=couro;
+    bancoEncosto.material.map = couro;
     chassi.add(bancoEncosto);
 
     var bancoAssento = criarBancoAssento();
     bancoAssento.position.set(-1, 0, 0);
-    bancoAssento.material.map=couro;
+    bancoAssento.material.map = couro;
     bancoEncosto.add(bancoAssento);
 
     // Funções necessárias para a criações de várias formas geométricas que integram o kart
     function criarBicoFrontal() {
         var GeometriaBico = new THREE.BoxGeometry(2, 10, 1, 5, 5, 5);
-        var BicoMaterial = new THREE.MeshLambertMaterial({color:"rgb(100,100,100)",side:THREE.DoubleSide});
+        var BicoMaterial = new THREE.MeshLambertMaterial({ color: "rgb(100,100,100)", side: THREE.DoubleSide });
         var bico = new THREE.Mesh(GeometriaBico, BicoMaterial);
         bico.castShadow = true;
         return bico;
@@ -192,10 +192,10 @@ function main() {
 
     function criarPneu() {
         var GeometriaPneu = new THREE.CylinderGeometry(2, 2, 2, 35, 7, false, 0);
-        var MaterialPneu = new THREE.MeshLambertMaterial({color:"rgb(20,20,20)",side:THREE.DoubleSide});
+        var MaterialPneu = new THREE.MeshLambertMaterial({ color: "rgb(20,20,20)", side: THREE.DoubleSide });
         var pneu = new THREE.Mesh(GeometriaPneu, MaterialPneu);
-        var borracha=textureLoader.load('./assets/borracha.jpg');
-        pneu.material.map=borracha;
+        var borracha = textureLoader.load('./assets/borracha.jpg');
+        pneu.material.map = borracha;
         pneu.castShadow = true;
         return pneu;
     }
@@ -206,7 +206,7 @@ function main() {
         var eixo = new THREE.Mesh(GeometriaEixo, MaterialEixo);
         eixo.castShadow = true;
         var iron = textureLoader.load('./assets/iron.jpg');
-        eixo.material.map=iron;
+        eixo.material.map = iron;
         return eixo;
     }
 
@@ -286,13 +286,13 @@ function main() {
 
                     var obj = normalizeAndRescale(obj, desiredScale);
                     var obj = fixPosition(obj);
-                    
-                    estatua=obj;
+
+                    estatua = obj;
 
                     scene.add(estatua);
                     estatua.position.set(-350, 300, 0);
                     estatua.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(90));
-                    estatua.castShadow=true;
+                    estatua.castShadow = true;
                 }, onProgress, onError);
             });
         }
@@ -397,7 +397,7 @@ function main() {
         lampada4.position.set(0, 16, 0);
 
         spotLightPoste4 = setSpotLightPoste(poste4.position.x + 20, poste4.position.y + 100, poste4.position.z);
-        lampada4.add(spotLightPoste4); 
+        lampada4.add(spotLightPoste4);
         scene.add(spotLightPoste4.target);
 
         // Poste 5
@@ -405,7 +405,7 @@ function main() {
         poste5.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
         poste5.position.set(-850, 400, 15);
         scene.add(poste5);
-        
+
         lampada5 = criaLampada();
         poste5.add(lampada5);
         lampada5.position.set(0, 16, 0);
@@ -413,7 +413,7 @@ function main() {
         spotLightPoste5 = setSpotLightPoste(poste5.position.x + 100, poste5.position.y, poste4.position.z);
         lampada5.add(spotLightPoste5);
         scene.add(spotLightPoste5.target);
-        
+
         // Poste 6
         poste6 = criaPoste();
         poste6.rotateOnAxis(new THREE.Vector3(1, 0, 0), degreesToRadians(90));
@@ -453,7 +453,7 @@ function main() {
         lampada8.position.set(0, 16, 0);
 
         spotLightPoste8 = setSpotLightPoste(poste8.position.x, poste8.position.y - 100, poste8.position.z);
-        lampada8.add(spotLightPoste8); 
+        lampada8.add(spotLightPoste8);
         scene.add(spotLightPoste8.target);
     }
 
@@ -502,17 +502,17 @@ function main() {
         spotLightPoste.shadow.mapSize.height = 600; // default
         spotLightPoste.shadow.camera.near = 0.3; // default
         spotLightPoste.shadow.camera.far = 1500; // default
-        spotLightPoste.distance=800;
-        spotLightPoste.penumbra=0.1;
-        spotLightPoste.intesity=10;
-        spotLightPoste.angle= degreesToRadians(70);
+        spotLightPoste.distance = 800;
+        spotLightPoste.penumbra = 0.1;
+        spotLightPoste.intesity = 10;
+        spotLightPoste.angle = degreesToRadians(70);
         spotLightPoste.shadow.camera.fov = radiansToDegrees(spotLightPoste.angle);
         spotLightPoste.name = "Spot Light Poste";
-        spotLightPoste.target.position.set(tgtx,tgty,tgtz);
-    
+        spotLightPoste.target.position.set(tgtx, tgty, tgtz);
+
         spotLightPoste.visible = true;
-        spotLightPoste.castShadow=true;
-        spotLightPoste.receiveShadow=false;
+        spotLightPoste.castShadow = true;
+        spotLightPoste.receiveShadow = false;
 
         return spotLightPoste;
     }
@@ -523,10 +523,10 @@ function main() {
         spotLightKart.shadow.mapSize.height = 512; // default
         spotLightKart.shadow.camera.near = 1; // default
         spotLightKart.shadow.camera.far = 500; // default
-        spotLightKart.distance=300;
-        spotLightKart.penumbra=0.5;
-        spotLightKart.intensity=2;
-        spotLightKart.angle= degreesToRadians(45);
+        spotLightKart.distance = 300;
+        spotLightKart.penumbra = 0.5;
+        spotLightKart.intensity = 2;
+        spotLightKart.angle = degreesToRadians(45);
         spotLightKart.shadow.camera.fov = radiansToDegrees(spotLightKart.angle);
         spotLightKart.name = "Spot Light Kart";
         spotLightKart.target = chassi;
@@ -534,8 +534,8 @@ function main() {
         scene.add(spotLightKart.target);
 
         spotLightKart.visible = true;
-        spotLightKart.castShadow=true;
-        spotLightKart.receiveShadow=true;
+        spotLightKart.castShadow = true;
+        spotLightKart.receiveShadow = true;
     }
     // ** Fim criação das luzes **
 
@@ -557,7 +557,7 @@ function main() {
     // Declaração das variáveis necessárias para o controle da velocidade do kart
     var velocidade = 0;
     var aceleracao = 0.02;
-    var velocidade_maxima = 4;
+    var velocidade_maxima = 5;
     var solta_setaparacima = false;
     var solta_setaparabaixo = false;
     var angulo_pneu = 0;
@@ -565,7 +565,7 @@ function main() {
 
     // Variável necessária para verificar qual modo de câmera está ativo
     var modo = 'jogo';
-    
+
 
     buildInterface();
     render();
@@ -576,7 +576,7 @@ function main() {
 
         var rotacao_pneus = degreesToRadians(20);
         var angulo_pneu_aux = degreesToRadians(3);
-        
+
         if (modo != 'inspecao') {
 
             if (keyboard.pressed("up")) {
@@ -587,7 +587,7 @@ function main() {
                     velocidade = velocidade + aceleracao * 3;
                     chassi.translateX(-velocidade);
                 }
-                else{
+                else {
                     pneu3.rotateY(rotacao_pneus);
                     pneu4.rotateY(rotacao_pneus);
                     solta_setaparacima = false;
@@ -597,8 +597,8 @@ function main() {
                     }
                     chassi.translateX(-velocidade);
                     voltaPneus();
+                }
             }
-        }
 
             if (keyboard.pressed("down")) {
                 solta_setaparabaixo = false;
@@ -607,7 +607,7 @@ function main() {
                     velocidade = velocidade - aceleracao * 3;
                     chassi.translateX(-velocidade);
                 }
-                else{
+                else {
                     solta_setaparacima = false;
                     solta_setaparabaixo = false;
                     if (velocidade > -velocidade_maxima) {
@@ -623,17 +623,17 @@ function main() {
             // Configura câmera para seguir o kart
             camera.up.set(0, 0, 1);
 
-            if(modo == 'jogo'){
-                var camera_posicao = new THREE.Vector3(80, 0, 20);
+            if (modo == 'jogo') {
+                var camera_posicao = new THREE.Vector3(60, 0, 20);
                 var camera_segue_kart = camera_posicao.applyMatrix4(chassi.matrixWorld);
                 camera.position.x = camera_segue_kart.x;
                 camera.position.y = camera_segue_kart.y;
-                camera.position.z = camera_segue_kart.z;
+                //camera.position.z = camera_segue_kart.z;
 
                 camera.lookAt(chassi.position);
             }
 
-            else if(modo == 'cockpit'){
+            else if (modo == 'cockpit') {
                 
                 var camera_posicao = new THREE.Vector3(8, 0, 1);
                 var camera_segue_kart = camera_posicao.applyMatrix4(chassi.matrixWorld);
@@ -717,7 +717,6 @@ function main() {
         /* Se o modo de inspeção estiver ativo, então o usuário deseja voltar para o modo de jogo. Nesse caso, é preciso adicionar o plano e as linhas, além das
         configurações da câmera*/
         if (modo == 'inspecao') {
-
             scene.add(planeAreia);
             scene.add(planePista)
             chassi.rotateOnAxis(new THREE.Vector3(0, 0, 1), degreesToRadians(-90));
@@ -744,10 +743,10 @@ function main() {
             // a posição do kart ao ir para o modo jogo
             chassi.position.set(salva_posicao_x, salva_posicao_y, salva_posicao_z);
 
-        } 
+        }
         // Se o modo jogo esta ativo, então o modo a ser ativado é o modo cockpit
-        else if(modo == 'jogo'){
-            
+        else if (modo == 'jogo') {
+
             projectionMessage.changeMessage("Modo Cockpit");
             modo = 'cockpit';
         }
@@ -867,7 +866,7 @@ function main() {
             chassi.translateX(-velocidade);
             voltaPneus();
         }
-        else if(velocidade < 0 && (solta_setaparacima == true || solta_setaparabaixo == true)){
+        else if (velocidade < -0.1 && (solta_setaparacima == true || solta_setaparabaixo == true)) {
             velocidade = velocidade + aceleracao;
             chassi.translateX(-velocidade);
             voltaPneus();
